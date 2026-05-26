@@ -1,4 +1,4 @@
-#import "../lib.typ": *
+#import "@preview/todone:0.1.0": *
 
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {
@@ -77,7 +77,7 @@ The ablation in Figure 4 is missing the no-momentum baseline.
 #lorem(28)
 
 #todo(inline: true)[Tighten the connection to the variance-reduction
-literature in the related-work section @alice]
+  literature in the related-work section @alice]
 
 = Outstanding work
 

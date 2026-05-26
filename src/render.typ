@@ -29,7 +29,14 @@
   }
 }
 
-#let render-margin(entry, cfg, position: auto, width: 2.5cm, left-dx: -2.8cm, right-dx: 1cm) = {
+#let render-margin(
+  entry,
+  cfg,
+  position: auto,
+  width: 2.5cm,
+  left-dx: -2.8cm,
+  right-dx: 1cm,
+) = {
   context {
     let pos = here().position()
     let page-size = page.width
@@ -49,7 +56,11 @@
       smallcaps(cfg.prefix),
     )
 
-    let body-rendered = _styled-body(entry.body, entry.color, show-mentions: cfg.show-mentions)
+    let body-rendered = _styled-body(
+      entry.body,
+      entry.color,
+      show-mentions: cfg.show-mentions,
+    )
 
     let assignees-line = if entry.assignees.len() > 0 {
       text(size: 0.7em, fill: entry.color.darken(20%))[

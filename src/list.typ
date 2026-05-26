@@ -69,7 +69,9 @@
     let groups = (:)
     let order = ()
     for entry in items {
-      let key = if entry.priority == none { "none" } else { str(entry.priority) }
+      let key = if entry.priority == none { "none" } else {
+        str(entry.priority)
+      }
       if key not in groups {
         groups.insert(key, ())
         order.push(key)

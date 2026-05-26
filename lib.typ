@@ -1,6 +1,6 @@
-#import "src/util.typ": extract-text, detect-assignees, hash-str
-#import "src/colors.typ": default-palette, color-for-assignee
-#import "src/state.typ": config-state, items-state, counter-state, register
+#import "src/util.typ": detect-assignees, extract-text, hash-str
+#import "src/colors.typ": color-for-assignee, default-palette
+#import "src/state.typ": config-state, counter-state, items-state, register
 #import "src/render.typ": render-inline, render-margin
 #import "src/list.typ": todo-list
 
@@ -82,7 +82,9 @@
 
   figure(kind: "todo", supplement: [TODO], outlined: false, numbering: none, [])
 
-  let effective-position = if position != auto { position } else { cfg.position }
+  let effective-position = if position != auto { position } else {
+    cfg.position
+  }
 
   if cfg.format != none {
     (cfg.format)(entry)
