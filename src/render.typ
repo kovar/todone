@@ -1,3 +1,5 @@
+#import "util.typ": detect-assignees
+
 #let _styled-body(body, color, show-mentions: true) = {
   if show-mentions {
     show regex("@\w+"): name => text(fill: color, weight: "bold", name)
@@ -85,9 +87,11 @@
       show-mentions: cfg.show-mentions,
     )
 
-    let assignees-line = if entry.assignees.len() > 0 {
+    let in-body = detect-assignees(entry.body)
+    let extra = entry.assignees.filter(a => a not in in-body)
+    let assignees-line = if extra.len() > 0 {
       text(size: 0.7em, fill: entry.color.darken(20%))[
-        #entry.assignees.map(a => "@" + a).join(", ")
+        #extra.map(a => "@" + a).join(", ")
       ]
     } else { none }
 
