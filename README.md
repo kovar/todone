@@ -96,7 +96,7 @@ Render a collected list of every TODO in the document.
 | `filter` | `none` or function | `none` | Predicate `entry => bool`. Each entry exposes `body`, `assignees`, `color`, `priority`, `done`. |
 | `group-by` | `none`, `"assignee"`, or `"priority"` | `none` | When set, groups entries under sub-headings. |
 
-### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true)`
+### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true, passthrough-refs: false)`
 
 The show-rule entry point. Apply with `#show: todone` or `#show: todone.with(...)`.
 
@@ -108,6 +108,7 @@ The show-rule entry point. Apply with `#show: todone` or `#show: todone.with(...
 | `assignees` | dictionary | `(:)` | Explicit `handle -> color` overrides for mention highlighting. Bypasses the palette hash. |
 | `format` | `none` or function | `none` | Custom renderer. Receives an `entry` dict (with `body`, `assignees`, `color`, `kind`, `prefix`, `priority`, `done`, `location`, `id`) and returns content. |
 | `show-mentions` | `bool` | `true` | When `true`, `@handles` are highlighted in the rendered body. When `false`, they are rendered as plain text. |
+| `passthrough-refs` | `bool` | `false` | When `true`, `@foo` inside a TODO body resolves as a normal Typst ref if `<foo>` exists in the document; only unresolved `@foo` are treated as mentions. When `false` (default), every `@foo` inside a TODO body is treated as a mention. |
 
 ### `default-palette`
 
@@ -129,6 +130,22 @@ With Typst's default page margins (~2.5cm on A4) a margin TODO would wrap every 
 ```
 
 Force a particular mode per call with `inline: true` (always inline) or a `format:` callback (always custom).
+
+### Real Typst refs inside TODOs
+
+`@foo` inside a TODO body normally clashes with Typst's reference syntax. By default `todone` neutralizes every `@foo` inside a TODO body to literal mention text, which means you cannot reference labeled elements (figures, sections, theorems) from a TODO body.
+
+Enable `passthrough-refs` to opt in to real refs inside TODOs:
+
+```typst
+#show: todone.with(passthrough-refs: true)
+
+= Section A <sec-a>
+
+#todo[See @sec-a — assign cleanup to @alice]
+```
+
+With this flag, `@foo` is resolved as a normal Typst ref when `<foo>` exists in the document, and treated as a mention only when the label is missing. Trade-off: each `@foo` triggers a `query()`, so heavily TODO-laden documents may render slightly slower.
 
 ### Hide all TODOs for final print
 

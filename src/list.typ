@@ -2,7 +2,7 @@
 #import "colors.typ": color-for-assignee
 
 #let _styled(body, cfg) = {
-  show regex("@\w+"): name => {
+  show regex("@[\w-]+"): name => {
     let handle = name.text.slice(1)
     let c = color-for-assignee(
       handle,

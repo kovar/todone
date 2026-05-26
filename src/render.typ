@@ -3,7 +3,7 @@
 
 #let _styled-body(body, cfg, show-mentions: true) = {
   if show-mentions {
-    show regex("@\w+"): name => {
+    show regex("@[\w-]+"): name => {
       let handle = name.text.slice(1)
       let c = color-for-assignee(
         handle,

@@ -6,8 +6,11 @@
   } else if type(c) == array {
     c.map(extract-text).join("")
   } else if type(c) == content {
-    if c.has("target") and repr(c.func()) == "ref" {
+    let f = repr(c.func())
+    if c.has("target") and f == "ref" {
       "@" + str(c.target)
+    } else if f == "space" or f == "linebreak" or f == "parbreak" {
+      " "
     } else if c.has("text") {
       c.text
     } else if c.has("children") {
@@ -17,7 +20,7 @@
     } else if c.has("child") {
       extract-text(c.child)
     } else {
-      ""
+      " "
     }
   } else {
     ""
@@ -26,7 +29,7 @@
 
 #let detect-assignees(body) = {
   let text = extract-text(body)
-  let matches = text.matches(regex("@(\w+)"))
+  let matches = text.matches(regex("@([\w-]+)"))
   let seen = (:)
   let result = ()
   for m in matches {

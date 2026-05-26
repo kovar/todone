@@ -13,6 +13,7 @@
   assignees: (:),
   format: none,
   show-mentions: true,
+  passthrough-refs: false,
 ) = {
   config-state.update(_ => (
     hidden: hidden,
@@ -21,6 +22,7 @@
     assignees: assignees,
     format: format,
     show-mentions: show-mentions,
+    passthrough-refs: passthrough-refs,
   ))
   body
 }
@@ -47,7 +49,10 @@
   let assignees = if assignee == none {
     ()
   } else if assignee == auto {
-    detect-assignees(body)
+    let detected = detect-assignees(body)
+    if cfg.passthrough-refs {
+      detected.filter(a => query(label(a)).len() == 0)
+    } else { detected }
   } else if type(assignee) == str {
     (assignee,)
   } else if type(assignee) == array {
@@ -56,7 +61,12 @@
     ()
   }
 
-  let safe-body = {
+  let safe-body = if cfg.passthrough-refs {
+    show ref: it => context {
+      if query(it.target).len() > 0 { it } else { "@" + str(it.target) }
+    }
+    body
+  } else {
     show ref: it => "@" + str(it.target)
     body
   }

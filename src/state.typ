@@ -7,6 +7,7 @@
   assignees: (:),
   format: none,
   show-mentions: true,
+  passthrough-refs: false,
 ))
 
 #let items-state = state("todone:items", ())
