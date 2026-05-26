@@ -2,22 +2,25 @@
 
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {
-  let label = if entry.priority == none {
-    entry.prefix
-  } else [#entry.prefix (#entry.priority)]
   box(
     fill: entry.color.lighten(85%),
     stroke: (left: 2pt + entry.color),
     inset: (x: 6pt, y: 4pt),
     radius: 2pt,
   )[
-    #text(weight: "bold", fill: entry.color.darken(30%))[#label]
+    #text(weight: "bold", fill: entry.color.darken(30%))[#entry.prefix]
     #h(0.4em)
     #entry.body
   ]
 }
 
-#show: todone.with(format: callout-format)
+#show: todone.with(
+  format: callout-format,
+  assignees: (
+    "alice": red,
+    "bob": blue,
+  ),
+)
 
 = On the convergence of distributed gradient methods
 
@@ -26,7 +29,7 @@
 The literature on distributed stochastic gradient descent has converged
 on a handful of canonical assumptions, but the bounded-variance regime
 remains poorly understood in the asynchronous setting.
-#todo(priority: "high")[
+#todo[
   Cite Lian et al. 2017 and the more recent Karimireddy survey @alice
 ]
 
@@ -52,7 +55,7 @@ the leading-order term by a factor of two.
 
 We evaluate on three benchmark tasks. The wall-clock numbers reported in
 Table 3 were collected on a shared cluster and may be noisy.
-#todo(priority: 2)[
+#todo[
   Re-run experiments on the dedicated nodes once allocation is approved
   @bob @carol
 ]

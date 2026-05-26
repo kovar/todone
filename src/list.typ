@@ -1,18 +1,4 @@
 #import "state.typ": config-state, items-state
-#import "colors.typ": color-for-assignee
-
-#let _styled(body, cfg) = {
-  show regex("@[\w-]+"): name => {
-    let handle = name.text.slice(1)
-    let c = color-for-assignee(
-      handle,
-      palette: cfg.palette,
-      overrides: cfg.assignees,
-    )
-    text(fill: c, weight: "bold", name)
-  }
-  body
-}
 
 #let _render-entry(entry, cfg) = {
   let swatch = box(
@@ -22,8 +8,7 @@
     radius: 1.5pt,
     baseline: 0.1em,
   )
-  let excerpt = _styled(entry.body, cfg)
-  let body-cell = link(entry.location)[#swatch #h(4pt) #excerpt]
+  let body-cell = link(entry.location)[#swatch #h(4pt) #entry.body]
   let page-num = entry.location.page()
   let row = box(width: 100%)[
     #body-cell
@@ -70,28 +55,6 @@
     }
     for key in order {
       heading(level: 2, if key == "unassigned" [unassigned] else { "@" + key })
-      for entry in groups.at(key) {
-        _render-entry(entry, cfg)
-        linebreak()
-      }
-    }
-  } else if group-by == "priority" {
-    let groups = (:)
-    let order = ()
-    for entry in items {
-      let key = if entry.priority == none { "none" } else {
-        str(entry.priority)
-      }
-      if key not in groups {
-        groups.insert(key, ())
-        order.push(key)
-      }
-      let arr = groups.at(key)
-      arr.push(entry)
-      groups.insert(key, arr)
-    }
-    for key in order {
-      heading(level: 2, key)
       for entry in groups.at(key) {
         _render-entry(entry, cfg)
         linebreak()

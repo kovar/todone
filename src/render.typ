@@ -1,26 +1,8 @@
 #import "util.typ": detect-assignees
 #import "colors.typ": color-for-assignee
 
-#let _styled-body(body, cfg, show-mentions: true) = {
-  if show-mentions {
-    show regex("@[\w-]+"): name => {
-      let handle = name.text.slice(1)
-      let c = color-for-assignee(
-        handle,
-        palette: cfg.palette,
-        overrides: cfg.assignees,
-      )
-      text(fill: c, weight: "bold", name)
-    }
-    body
-  } else {
-    body
-  }
-}
-
 #let render-inline(entry, cfg) = {
-  let body = entry.body
-  let inner = _styled-body(body, cfg, show-mentions: cfg.show-mentions)
+  let inner = entry.body
   let label = text(
     size: 0.7em,
     weight: "bold",
@@ -110,11 +92,7 @@
       smallcaps(entry.prefix),
     )
 
-    let body-rendered = _styled-body(
-      entry.body,
-      cfg,
-      show-mentions: cfg.show-mentions,
-    )
+    let body-rendered = entry.body
 
     let in-body = detect-assignees(entry.body)
     let extra = entry.assignees.filter(a => a not in in-body)

@@ -71,7 +71,7 @@ The type owns the box color; `@mentions` inside the body keep their own per-assi
 
 ## API reference
 
-### `todo(body, kind: "todo", assignee: auto, color: auto, priority: none, position: auto, inline: false, done: false)`
+### `todo(body, kind: "todo", assignee: auto, color: auto, position: auto, inline: false, done: false)`
 
 Render a single annotation. `#fixme` and `#ask` are shorthand for `todo.with(kind: ...)`.
 
@@ -81,7 +81,6 @@ Render a single annotation. `#fixme` and `#ask` are shorthand for `todo.with(kin
 | `kind` | `str` | `"todo"` | One of `"todo"`, `"fixme"`, `"ask"`. Determines the prefix label and box color. |
 | `assignee` | `auto`, `str`, or `array` | `auto` | When `auto`, assignees are read from `@mentions` in the body. Pass a string or array to override. |
 | `color` | `auto` or `color` | `auto` | When `auto`, the box color comes from the kind. Pass a color to override. |
-| `priority` | `none`, `str`, or `int` | `none` | Optional priority tag (for example `"high"` or `1`). Surfaced in `todo-list`. |
 | `position` | `auto`, `left`, or `right` | `auto` | Which margin side to render on. `auto` prefers the wider margin. Ignored when `inline` is `true`. |
 | `inline` | `bool` | `false` | Force inline rendering even when margins are wide. Inline is also the automatic fallback when no margin reaches 3cm. |
 | `done` | `bool` | `false` | Mark this annotation as completed. Renders with a strikethrough. |
@@ -93,8 +92,8 @@ Render a collected list of every TODO in the document.
 | Argument | Type | Default | Description |
 | --- | --- | --- | --- |
 | `title` | content | `[TODOs]` | Heading for the list. Pass `none` to omit. |
-| `filter` | `none` or function | `none` | Predicate `entry => bool`. Each entry exposes `body`, `assignees`, `color`, `priority`, `done`. |
-| `group-by` | `none`, `"assignee"`, or `"priority"` | `none` | When set, groups entries under sub-headings. |
+| `filter` | `none` or function | `none` | Predicate `entry => bool`. Each entry exposes `body`, `assignees`, `color`, `kind`, `done`. |
+| `group-by` | `none` or `"assignee"` | `none` | When set, groups entries under sub-headings. |
 
 ### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true, passthrough-refs: false)`
 
@@ -106,7 +105,7 @@ The show-rule entry point. Apply with `#show: todone` or `#show: todone.with(...
 | `position` | `auto`, `left`, or `right` | `auto` | Default margin side. `auto` prefers the wider margin. |
 | `palette` | array of colors | `default-palette` | Colors used to highlight `@mentions` per assignee. |
 | `assignees` | dictionary | `(:)` | Explicit `handle -> color` overrides for mention highlighting. Bypasses the palette hash. |
-| `format` | `none` or function | `none` | Custom renderer. Receives an `entry` dict (with `body`, `assignees`, `color`, `kind`, `prefix`, `priority`, `done`, `location`, `id`) and returns content. |
+| `format` | `none` or function | `none` | Custom renderer. Receives an `entry` dict (with `body`, `assignees`, `color`, `kind`, `prefix`, `done`, `location`, `id`) and returns content. |
 | `show-mentions` | `bool` | `true` | When `true`, `@handles` are highlighted in the rendered body. When `false`, they are rendered as plain text. |
 | `passthrough-refs` | `bool` | `false` | When `true`, `@foo` inside a TODO body resolves as a normal Typst ref if `<foo>` exists in the document; only unresolved `@foo` are treated as mentions. When `false` (default), every `@foo` inside a TODO body is treated as a mention. |
 
@@ -170,28 +169,25 @@ Handles not listed in the dictionary still receive their hashed color from the p
 
 ```typst
 #show: todone.with(format: entry => {
-  let tag = if entry.priority == none [TODO] else [TODO (#entry.priority)]
   box(
     fill: entry.color.lighten(80%),
     stroke: entry.color + 0.5pt,
     inset: 4pt,
     radius: 3pt,
   )[
-    *#tag* #entry.body
-    #if entry.assignees.len() > 0 [
-      — #entry.assignees.map(a => "@" + a).join(", ")
-    ]
+    *#entry.prefix* #entry.body
   ]
 })
 ```
 
 The callback receives a single `entry` dict with these fields:
 
-- `body` — the original body content (apply `@mention` highlighting yourself if desired)
+- `body` — body content with `@mentions` already highlighted in their assignee colors
 - `assignees` — array of handle strings
-- `color` — the resolved color for this TODO
-- `priority` — the `priority:` value or `none`
-- `done` — `true` if the TODO is marked completed
+- `color` — the resolved color for this annotation (kind color by default)
+- `kind` — `"todo"`, `"fixme"`, or `"ask"`
+- `prefix` — the label content (`[TODO]`, `[FIX]`, `[?]`)
+- `done` — `true` if marked completed
 - `location` — the source location, useful for cross-references
 - `id` — a unique integer id assigned in document order
 
@@ -209,7 +205,11 @@ Only show TODOs assigned to Alice. Filters compose naturally with `group-by`.
 #todo-list(group-by: "assignee")
 ```
 
-Produces one sub-section per assignee. A TODO with multiple assignees appears under each. Use `group-by: "priority"` to group by priority instead.
+Produces one sub-section per assignee. A TODO with multiple assignees appears under each.
+
+## Why no priorities, due dates, or status workflows
+
+`todone` deliberately does not model priorities, due dates, statuses (`in-progress`, `blocked`, …), tags, or any other task-tracker metadata. Anything richer than "who, what kind, done?" belongs outside the document — in an issue tracker, a kanban board, or a checklist file — where it can be queried, sorted, and updated independently of the prose. Keeping `todone` small protects the call-site (`#todo[Fix this @alice]` stays a single short line) and avoids competing with tools that already do task tracking well.
 
 ## Comparison with prior art
 

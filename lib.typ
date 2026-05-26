@@ -32,7 +32,6 @@
   kind: "todo",
   assignee: auto,
   color: auto,
-  priority: none,
   position: auto,
   inline: false,
   done: false,
@@ -71,13 +70,25 @@
     body
   }
 
+  let styled-body = if cfg.show-mentions {
+    show regex("@[\w-]+"): name => {
+      let handle = name.text.slice(1)
+      let c = color-for-assignee(
+        handle,
+        palette: cfg.palette,
+        overrides: cfg.assignees,
+      )
+      text(fill: c, weight: "bold", name)
+    }
+    safe-body
+  } else { safe-body }
+
   let entry = (
-    body: safe-body,
+    body: styled-body,
     assignees: assignees,
     color: resolved-color,
     kind: kind,
     prefix: resolved-prefix,
-    priority: priority,
     done: done,
     location: here(),
   )
@@ -114,7 +125,6 @@
 }
 
 #let todo-done = todo.with(done: true)
-#let todo-wip = todo.with(priority: "wip")
 
 #let fixme = todo.with(kind: "fixme")
 #let ask = todo.with(kind: "ask")
