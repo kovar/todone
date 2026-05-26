@@ -1,0 +1,17 @@
+[package]
+name = "todone"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["kovar"]
+license = "MIT"
+description = "Ergonomic TODO annotations with auto-colored assignees."
+repository = "https://github.com/kovar/todone"
+keywords = ["todo", "annotation", "review", "comments", "assignee"]
+categories = ["utility"]
+compiler = "0.13.0"
+exclude = [
+  "examples/*.pdf",
+  ".github/*",
+  ".claude/*",
+  "*.png",
+]
