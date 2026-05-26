@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: typst-community/setup-typst@v4
+        with:
+          typst-version: "0.13.0"
+
+      - name: Install typstyle
+        run: cargo install typstyle --locked
+
+      - name: Install tytanic
+        run: cargo install tytanic
+
+      - name: Install typst-package-check
+        run: cargo install --git https://github.com/typst/package-check typst-package-check
+
+      - name: typstyle --check
+        run: typstyle --check lib.typ src/*.typ examples/*.typ
+
+      - name: Compile examples
+        run: |
+          typst compile --root . examples/basic.typ
+          typst compile --root . examples/advanced.typ
+
+      - name: Run tytanic
+        run: tt run --no-fail-fast
+
+      - name: Package check
+        run: typst-package-check check .

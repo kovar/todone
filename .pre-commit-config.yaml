@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: typstyle
+        name: typstyle (format)
+        entry: typstyle -i
+        language: system
+        files: \.typ$
+
+      - id: typst-compile-examples
+        name: typst compile examples
+        entry: bash -c 'typst compile --root . examples/basic.typ /tmp/_basic.pdf && typst compile --root . examples/advanced.typ /tmp/_advanced.pdf'
+        language: system
+        pass_filenames: false
+        files: \.typ$
