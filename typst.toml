@@ -11,7 +11,11 @@ categories = ["utility"]
 compiler = "0.13.0"
 exclude = [
   "examples/*.pdf",
-  ".github/*",
-  ".claude/*",
+  ".github/**",
+  ".claude/**",
+  ".git/**",
+  ".gitignore",
+  ".pre-commit-config.yaml",
+  "tests/**",
   "*.png",
 ]
