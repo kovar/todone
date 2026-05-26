@@ -29,6 +29,11 @@
   }
 }
 
+#let _descent(page-num, side-name) = state(
+  "todone:descent:" + str(page-num) + ":" + side-name,
+  0pt,
+)
+
 #let render-margin(
   entry,
   cfg,
@@ -36,6 +41,7 @@
   width: 2.5cm,
   left-dx: -2.8cm,
   right-dx: 1cm,
+  gap: 4pt,
 ) = {
   context {
     let pos = here().position()
@@ -46,6 +52,7 @@
       let middle = page-size / 2
       if pos.x < middle { left } else { right }
     }
+    let side-name = if side == left { "L" } else { "R" }
 
     let dx = if side == left { left-dx } else { right-dx }
 
@@ -89,10 +96,17 @@
 
     let placed = if entry.done { strike(inner) } else { inner }
 
+    let m = measure(placed)
+    let descent = _descent(pos.page, side-name)
+    let prev = descent.get()
+    let placed-y = calc.max(pos.y, prev + gap)
+    let dy = placed-y - pos.y
+    descent.update(_ => placed-y + m.height)
+
     place(
       side,
       dx: dx,
-      dy: 0pt,
+      dy: dy,
       float: false,
       placed,
     )
