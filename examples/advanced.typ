@@ -3,11 +3,6 @@
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {
   let label = if entry.priority == none [FIX] else [FIX (#entry.priority)]
-  let who = if entry.assignees.len() == 0 [] else {
-    text(size: 0.85em, fill: entry.color.darken(20%))[
-      — #entry.assignees.map(a => "@" + a).join(", ")
-    ]
-  }
   box(
     fill: entry.color.lighten(85%),
     stroke: (left: 2pt + entry.color),
@@ -17,8 +12,6 @@
     #text(weight: "bold", fill: entry.color.darken(30%))[#label]
     #h(0.4em)
     #entry.body
-    #h(0.4em)
-    #who
   ]
 }
 
