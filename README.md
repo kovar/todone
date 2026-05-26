@@ -107,6 +107,17 @@ The built-in palette used for auto-coloring. Exported so you can extend or reord
 
 ## Configuration recipes
 
+### Give margin TODOs room to breathe
+
+Margin TODOs auto-size to the page margin. With Typst's default A4 margins (~2.5cm) the box ends up narrow and wraps every word or two. Widen the relevant margin before using margin TODOs:
+
+```typst
+#set page(margin: (left: 4.5cm, right: 2cm, y: 2cm))
+#show: todone
+```
+
+Use `inline: true` on individual TODOs (or a `format:` callback) if you'd rather keep narrow margins.
+
 ### Hide all TODOs for final print
 
 ```typst

@@ -38,23 +38,39 @@
   entry,
   cfg,
   position: auto,
-  width: 2.5cm,
-  left-dx: -2.8cm,
-  right-dx: 1cm,
+  width: auto,
   gap: 4pt,
+  page-padding: 4mm,
 ) = {
   context {
     let pos = here().position()
-    let page-size = page.width
+    let pw = page.width
     let side = if position == left or position == right {
       position
-    } else {
-      let middle = page-size / 2
-      if pos.x < middle { left } else { right }
-    }
+    } else if pos.x < pw / 2 { left } else { right }
     let side-name = if side == left { "L" } else { "R" }
 
-    let dx = if side == left { left-dx } else { right-dx }
+    let m-left = if type(page.margin) == dictionary and "left" in page.margin {
+      page.margin.left
+    } else if type(page.margin) == length {
+      page.margin
+    } else {
+      calc.min(pw * 2.5 / 21, 3cm)
+    }
+    let m-right = if (
+      type(page.margin) == dictionary and "right" in page.margin
+    ) {
+      page.margin.right
+    } else if type(page.margin) == length {
+      page.margin
+    } else {
+      calc.min(pw * 2.5 / 21, 3cm)
+    }
+
+    let margin-w = if side == left { m-left } else { m-right }
+    let box-w = if width == auto {
+      calc.max(margin-w - page-padding * 2, 1cm)
+    } else { width }
 
     let label = text(
       size: 0.7em,
@@ -82,7 +98,7 @@
     }
 
     let inner = box(
-      width: width,
+      width: box-w,
       inset: (x: 5pt, y: 3pt),
       stroke: stroke-side,
     )[
@@ -102,6 +118,12 @@
     let placed-y = calc.max(pos.y, prev + gap)
     let dy = placed-y - pos.y
     descent.update(_ => placed-y + m.height)
+
+    let dx = if side == left {
+      page-padding - m-left
+    } else {
+      m-right - page-padding - box-w
+    }
 
     place(
       side,
