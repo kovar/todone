@@ -1,6 +1,5 @@
 #import "@preview/todone:0.1.0": *
 
-#set page(margin: (left: 4.5cm, right: 2cm, y: 2cm))
 #show: todone
 
 = Quarterly report draft

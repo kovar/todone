@@ -47,10 +47,6 @@
   context {
     let pos = here().position()
     let pw = page.width
-    let side = if position == left or position == right {
-      position
-    } else if pos.x < pw / 2 { left } else { right }
-    let side-name = if side == left { "L" } else { "R" }
 
     let m-left = if type(page.margin) == dictionary and "left" in page.margin {
       page.margin.left
@@ -68,6 +64,13 @@
     } else {
       calc.min(pw * 2.5 / 21, 3cm)
     }
+
+    let side = if position == left or position == right {
+      position
+    } else if m-left != m-right {
+      if m-left > m-right { left } else { right }
+    } else if pos.x < pw / 2 { left } else { right }
+    let side-name = if side == left { "L" } else { "R" }
 
     let margin-w = if side == left { m-left } else { m-right }
     let box-w = if width == auto {

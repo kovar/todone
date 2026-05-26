@@ -86,9 +86,23 @@
     cfg.position
   }
 
+  let margin-fits = {
+    let m = page.margin
+    let resolve = side => {
+      if type(m) == dictionary and side in m {
+        m.at(side)
+      } else if type(m) == length {
+        m
+      } else {
+        calc.min(page.width * 2.5 / 21, 3cm)
+      }
+    }
+    calc.max(resolve("left"), resolve("right")) >= 3cm
+  }
+
   if cfg.format != none {
     (cfg.format)(entry)
-  } else if inline {
+  } else if inline or not margin-fits {
     render-inline(entry, cfg)
   } else {
     render-margin(entry, cfg, position: effective-position)
