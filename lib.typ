@@ -3,6 +3,7 @@
 #import "src/state.typ": config-state, counter-state, items-state, register
 #import "src/render.typ": render-inline, render-margin
 #import "src/list.typ": todo-list
+#import "src/kinds.typ": kinds
 
 #let todone(
   body,
@@ -12,7 +13,6 @@
   assignees: (:),
   format: none,
   show-mentions: true,
-  prefix: [TODO],
 ) = {
   config-state.update(_ => (
     hidden: hidden,
@@ -21,13 +21,13 @@
     assignees: assignees,
     format: format,
     show-mentions: show-mentions,
-    prefix: prefix,
   ))
   body
 }
 
 #let todo(
   body,
+  kind: "todo",
   assignee: auto,
   color: auto,
   priority: none,
@@ -39,6 +39,10 @@
   if cfg.hidden {
     return
   }
+
+  let kind-spec = kinds.at(kind, default: kinds.todo)
+  let resolved-color = if color != auto { color } else { kind-spec.color }
+  let resolved-prefix = kind-spec.prefix
 
   let assignees = if assignee == none {
     ()
@@ -52,18 +56,6 @@
     ()
   }
 
-  let resolved-color = if color != auto {
-    color
-  } else if assignees.len() > 0 {
-    color-for-assignee(
-      assignees.at(0),
-      palette: cfg.palette,
-      overrides: cfg.assignees,
-    )
-  } else {
-    rgb("#888888")
-  }
-
   let safe-body = {
     show ref: it => "@" + str(it.target)
     body
@@ -73,6 +65,8 @@
     body: safe-body,
     assignees: assignees,
     color: resolved-color,
+    kind: kind,
+    prefix: resolved-prefix,
     priority: priority,
     done: done,
     location: here(),
@@ -111,3 +105,6 @@
 
 #let todo-done = todo.with(done: true)
 #let todo-wip = todo.with(priority: "wip")
+
+#let fixme = todo.with(kind: "fixme")
+#let ask = todo.with(kind: "ask")

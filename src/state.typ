@@ -7,7 +7,6 @@
   assignees: (:),
   format: none,
   show-mentions: true,
-  prefix: [TODO],
 ))
 
 #let items-state = state("todone:items", ())

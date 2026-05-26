@@ -57,21 +57,34 @@ Multiple mentions are supported and produce a multi-color marker:
 
 Colors stay consistent across the document: every occurrence of `@alice` is the same color, every occurrence of `@bob` is a different stable color, and `@carol` gets a third — all without any configuration. Override colors explicitly via the `assignees:` option when needed.
 
+## Types
+
+Three built-in types, each with its own color and label:
+
+| Function | Label | Color | When to use |
+| --- | --- | --- | --- |
+| `#todo[...]` | TODO | blue | generic task |
+| `#fixme[...]` | FIX | red | known broken thing |
+| `#ask[...]` | ? | purple | open question awaiting an answer |
+
+The type owns the box color; `@mentions` inside the body keep their own per-assignee colors. So `#fixme[Broken @alice]` renders as a red FIX box with `@alice` highlighted in alice's color.
+
 ## API reference
 
-### `todo(body, assignee: auto, color: auto, priority: none, position: auto, inline: false, done: false)`
+### `todo(body, kind: "todo", assignee: auto, color: auto, priority: none, position: auto, inline: false, done: false)`
 
-Render a single TODO annotation.
+Render a single annotation. `#fixme` and `#ask` are shorthand for `todo.with(kind: ...)`.
 
 | Argument | Type | Default | Description |
 | --- | --- | --- | --- |
-| `body` | content | — | The TODO text. `@handle` tokens are detected automatically. |
+| `body` | content | — | The annotation text. `@handle` tokens are detected automatically. |
+| `kind` | `str` | `"todo"` | One of `"todo"`, `"fixme"`, `"ask"`. Determines the prefix label and box color. |
 | `assignee` | `auto`, `str`, or `array` | `auto` | When `auto`, assignees are read from `@mentions` in the body. Pass a string or array to override. |
-| `color` | `auto` or `color` | `auto` | When `auto`, the color is derived from the first assignee. Pass a color to override. |
-| `priority` | `none`, `str`, or `int` | `none` | Optional priority tag (for example `"high"` or `1`). Surfaced in the rendered TODO and in `todo-list`. |
-| `position` | `auto`, `left`, or `right` | `auto` | Which margin side to render on. `auto` picks the side closer to the call site. Ignored when `inline` is `true`. |
-| `inline` | `bool` | `false` | Render in the text flow instead of the margin. |
-| `done` | `bool` | `false` | Mark this TODO as completed. Renders with a strikethrough and is filtered out by default groupings. |
+| `color` | `auto` or `color` | `auto` | When `auto`, the box color comes from the kind. Pass a color to override. |
+| `priority` | `none`, `str`, or `int` | `none` | Optional priority tag (for example `"high"` or `1`). Surfaced in `todo-list`. |
+| `position` | `auto`, `left`, or `right` | `auto` | Which margin side to render on. `auto` prefers the wider margin. Ignored when `inline` is `true`. |
+| `inline` | `bool` | `false` | Force inline rendering even when margins are wide. Inline is also the automatic fallback when no margin reaches 3cm. |
+| `done` | `bool` | `false` | Mark this annotation as completed. Renders with a strikethrough. |
 
 ### `todo-list(title: [TODOs], filter: none, group-by: none)`
 
@@ -83,19 +96,18 @@ Render a collected list of every TODO in the document.
 | `filter` | `none` or function | `none` | Predicate `entry => bool`. Each entry exposes `body`, `assignees`, `color`, `priority`, `done`. |
 | `group-by` | `none`, `"assignee"`, or `"priority"` | `none` | When set, groups entries under sub-headings. |
 
-### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true, prefix: [TODO])`
+### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true)`
 
 The show-rule entry point. Apply with `#show: todone` or `#show: todone.with(...)`.
 
 | Argument | Type | Default | Description |
 | --- | --- | --- | --- |
-| `hidden` | `bool` | `false` | Hide every TODO in the output. Useful for final print runs. |
-| `position` | `auto`, `left`, or `right` | `auto` | Default margin side for `#todo` calls. `auto` picks the side closer to the call site. |
-| `palette` | array of colors | `default-palette` | Colors used by the auto-coloring hash. |
-| `assignees` | dictionary | `(:)` | Explicit `handle -> color` overrides. Bypasses the palette hash. |
-| `format` | `none` or function | `none` | Custom renderer. Receives an `entry` dict and returns content. See [Custom format](#custom-format). |
+| `hidden` | `bool` | `false` | Hide every annotation in the output. Useful for final print runs. |
+| `position` | `auto`, `left`, or `right` | `auto` | Default margin side. `auto` prefers the wider margin. |
+| `palette` | array of colors | `default-palette` | Colors used to highlight `@mentions` per assignee. |
+| `assignees` | dictionary | `(:)` | Explicit `handle -> color` overrides for mention highlighting. Bypasses the palette hash. |
+| `format` | `none` or function | `none` | Custom renderer. Receives an `entry` dict (with `body`, `assignees`, `color`, `kind`, `prefix`, `priority`, `done`, `location`, `id`) and returns content. |
 | `show-mentions` | `bool` | `true` | When `true`, `@handles` are highlighted in the rendered body. When `false`, they are rendered as plain text. |
-| `prefix` | content | `[TODO]` | Label rendered before each TODO. |
 
 ### `default-palette`
 

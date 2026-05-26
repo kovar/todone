@@ -1,8 +1,17 @@
 #import "util.typ": detect-assignees
+#import "colors.typ": color-for-assignee
 
-#let _styled-body(body, color, show-mentions: true) = {
+#let _styled-body(body, cfg, show-mentions: true) = {
   if show-mentions {
-    show regex("@\w+"): name => text(fill: color, weight: "bold", name)
+    show regex("@\w+"): name => {
+      let handle = name.text.slice(1)
+      let c = color-for-assignee(
+        handle,
+        palette: cfg.palette,
+        overrides: cfg.assignees,
+      )
+      text(fill: c, weight: "bold", name)
+    }
     body
   } else {
     body
@@ -11,19 +20,36 @@
 
 #let render-inline(entry, cfg) = {
   let body = entry.body
-  let inner = _styled-body(body, entry.color, show-mentions: cfg.show-mentions)
+  let inner = _styled-body(body, cfg, show-mentions: cfg.show-mentions)
   let label = text(
     size: 0.7em,
     weight: "bold",
     fill: entry.color,
-    smallcaps(cfg.prefix),
+    smallcaps(entry.prefix),
   )
+  let in-body = detect-assignees(entry.body)
+  let extra = entry.assignees.filter(a => a not in in-body)
+  let extra-line = if extra.len() > 0 {
+    (
+      h(4pt)
+        + extra
+          .map(a => {
+            let c = color-for-assignee(
+              a,
+              palette: cfg.palette,
+              overrides: cfg.assignees,
+            )
+            text(fill: c, weight: "bold", "@" + a)
+          })
+          .join(" ")
+    )
+  } else { none }
   let content = box(
     inset: (x: 4pt, y: 2pt),
     radius: 2pt,
     fill: entry.color.transparentize(80%),
     stroke: 0.5pt + entry.color,
-  )[#label #h(3pt) #inner]
+  )[#label #h(3pt) #inner#extra-line]
   if entry.done {
     strike(content)
   } else {
@@ -81,12 +107,12 @@
       size: 0.7em,
       weight: "bold",
       fill: entry.color,
-      smallcaps(cfg.prefix),
+      smallcaps(entry.prefix),
     )
 
     let body-rendered = _styled-body(
       entry.body,
-      entry.color,
+      cfg,
       show-mentions: cfg.show-mentions,
     )
 
@@ -94,7 +120,16 @@
     let extra = entry.assignees.filter(a => a not in in-body)
     let assignees-line = if extra.len() > 0 {
       text(size: 0.7em, fill: entry.color.darken(20%))[
-        #extra.map(a => "@" + a).join(", ")
+        #extra
+        .map(a => {
+        let c = color-for-assignee(
+        a,
+        palette: cfg.palette,
+        overrides: cfg.assignees,
+        )
+        text(fill: c, weight: "bold", "@" + a)
+        })
+        .join(", ")
       ]
     } else { none }
 

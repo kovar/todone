@@ -2,7 +2,9 @@
 
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {
-  let label = if entry.priority == none [FIX] else [FIX (#entry.priority)]
+  let label = if entry.priority == none {
+    entry.prefix
+  } else [#entry.prefix (#entry.priority)]
   box(
     fill: entry.color.lighten(85%),
     stroke: (left: 2pt + entry.color),
@@ -15,14 +17,7 @@
   ]
 }
 
-#show: todone.with(
-  assignees: (
-    "alice": red,
-    "bob": blue,
-  ),
-  prefix: [FIX],
-  format: callout-format,
-)
+#show: todone.with(format: callout-format)
 
 = On the convergence of distributed gradient methods
 
@@ -37,9 +32,9 @@ remains poorly understood in the asynchronous setting.
 
 A complete characterization of the asynchronous case is beyond the scope
 of this paper; we restrict attention to the bounded-delay model.
-#todo[
+#ask[
   Reviewer asked whether unbounded delay is tractable. Add a one-line
-  footnote saying we leave it as future work. @bob
+  footnote saying we leave it as future work, or commit to a result. @bob
 ]
 
 == Main result
@@ -48,7 +43,7 @@ of this paper; we restrict attention to the bounded-delay model.
 
 Our central contribution is Theorem 1, which sharpens the constant in
 the leading-order term by a factor of two.
-#todo(done: true)[
+#fixme(done: true)[
   Double-check the factor-of-two improvement against the proof in
   Appendix B @alice
 ]
@@ -63,7 +58,7 @@ Table 3 were collected on a shared cluster and may be noisy.
 ]
 
 The ablation in Figure 4 is missing the no-momentum baseline.
-#todo[Add no-momentum row to the ablation @carol]
+#fixme[Add no-momentum row to the ablation @carol]
 
 == Discussion
 
