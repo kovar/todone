@@ -18,15 +18,11 @@
   if entry.done { strike(row) } else { row }
 }
 
-#let todo-list(title: [TODOs], filter: none, group-by: none) = context {
+#let todo-list(filter: none, group-by: none) = context {
   let cfg = config-state.get()
   let items = items-state.final()
   if filter != none {
     items = items.filter(filter)
-  }
-
-  if title != none {
-    heading(level: 1, title)
   }
 
   if group-by == none {

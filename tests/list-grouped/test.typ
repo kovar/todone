@@ -12,4 +12,5 @@
 
 #todo-list(group-by: "assignee")
 
-#todo-list(title: [Open], filter: e => not e.done)
+= Open
+#todo-list(filter: e => not e.done)

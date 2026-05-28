@@ -32,11 +32,7 @@
     fill: entry.color.transparentize(80%),
     stroke: 0.5pt + entry.color,
   )[#label #h(3pt) #inner#extra-line]
-  if entry.done {
-    strike(content)
-  } else {
-    content
-  }
+  if entry.done { strike(content) } else { content }
 }
 
 #let _descent(page-num, side-name) = state(
@@ -50,7 +46,7 @@
   position: auto,
   width: auto,
   gap: 4pt,
-  page-padding: 4mm,
+  page-padding: 2mm,
 ) = {
   context {
     let pos = here().position()
@@ -119,11 +115,11 @@
 
     let inner = box(
       width: box-w,
-      inset: (x: 5pt, y: 3pt),
+      inset: (x: 3pt, y: 2pt),
       stroke: stroke-side,
     )[
-      #label \
-      #text(size: 0.8em, body-rendered)
+      #set align(left)
+      #label #h(4pt) #text(size: 0.8em, body-rendered)
       #if assignees-line != none [
         \
         #assignees-line
@@ -137,12 +133,12 @@
     let prev = descent.get()
     let placed-y = calc.max(pos.y, prev + gap)
     let dy = placed-y - pos.y
-    descent.update(_ => placed-y + m.height)
+    descent.update(p => calc.max(pos.y, p + gap) + m.height)
 
     let dx = if side == left {
       page-padding - m-left
     } else {
-      m-right - page-padding - box-w
+      m-right - page-padding
     }
 
     place(

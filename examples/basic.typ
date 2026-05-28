@@ -1,6 +1,4 @@
-#import "@preview/todone:0.1.0": *
-
-#show: todone
+#import "@local/todone:0.2.0": *
 
 = Quarterly report draft
 
@@ -25,3 +23,4 @@ Finally, the citation style is inconsistent between sections 3 and 4.
 = TODOs
 
 #todo-list()
+

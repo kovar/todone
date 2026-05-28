@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify that every reference to @preview/todone:<version> in user-facing
+# Verify that every reference to @local/todone:<version> in user-facing
 # files (README, examples) matches the version in typst.toml.
 #
 # Usage: check-version-refs.sh <expected-version>
@@ -8,7 +8,7 @@ set -euo pipefail
 expected=${1:?expected version required}
 
 # Files that contain copy-pasteable user-facing imports.
-files=(README.md examples/basic.typ examples/advanced.typ)
+files=(README.md examples/basic.typ examples/advanced.typ examples/margin.typ)
 
 status=0
 for f in "${files[@]}"; do
@@ -16,13 +16,13 @@ for f in "${files[@]}"; do
     echo "skip: $f (not found)" >&2
     continue
   fi
-  # Find every @preview/todone:X.Y.Z reference.
+  # Find every @local/todone:X.Y.Z reference.
   while IFS= read -r ref; do
     if [ "$ref" != "$expected" ]; then
       echo "version drift in $f: found '$ref', expected '$expected'" >&2
       status=1
     fi
-  done < <(grep -oE '@preview/todone:[0-9]+\.[0-9]+\.[0-9]+' "$f" | sed 's|@preview/todone:||')
+  done < <(grep -oE '@local/todone:[0-9]+\.[0-9]+\.[0-9]+' "$f" | sed 's|@local/todone:||')
 done
 
 if [ $status -ne 0 ]; then

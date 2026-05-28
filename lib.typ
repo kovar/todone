@@ -14,6 +14,7 @@
   format: none,
   show-mentions: true,
   passthrough-refs: false,
+  min-margin: 2.5cm,
 ) = {
   config-state.update(_ => (
     hidden: hidden,
@@ -23,6 +24,7 @@
     format: format,
     show-mentions: show-mentions,
     passthrough-refs: passthrough-refs,
+    min-margin: min-margin,
   ))
   body
 }
@@ -95,8 +97,6 @@
 
   register(entry)
 
-  figure(kind: "todo", supplement: [TODO], outlined: false, numbering: none, [])
-
   let effective-position = if position != auto { position } else {
     cfg.position
   }
@@ -112,15 +112,25 @@
         calc.min(page.width * 2.5 / 21, 3cm)
       }
     }
-    calc.max(resolve("left"), resolve("right")) >= 3cm
+    calc.max(resolve("left"), resolve("right")) >= cfg.min-margin
   }
 
-  if cfg.format != none {
+  let rendered = if cfg.format != none {
     (cfg.format)(entry)
   } else if inline or not margin-fits {
     render-inline(entry, cfg)
   } else {
     render-margin(entry, cfg, position: effective-position)
+  }
+
+  // Margin TODOs are placed absolutely and take no flow space, so they
+  // don't need a block wrapper. Inline and custom formats do — without
+  // it, a short TODO can flow onto the same visual line as surrounding
+  // prose and visually hide.
+  if margin-fits and not inline and cfg.format == none {
+    rendered
+  } else {
+    block(above: 0.4em, below: 0.4em, rendered)
   }
 }
 

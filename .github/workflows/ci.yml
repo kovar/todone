@@ -9,9 +9,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: typst-community/setup-typst@v4
+      - uses: typst-community/setup-typst@v5
         with:
           typst-version: "0.13.0"
 
@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache typst-package-check
         id: cache-pcheck
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cargo/bin/typst-package-check
           # Bump the suffix or pin a different --rev to force a rebuild.
@@ -51,19 +51,23 @@ jobs:
       - name: typstyle --check
         run: typstyle --check lib.typ src/*.typ examples/*.typ
 
+
       - name: Stage package into Typst data dir
         env:
           VERSION: ${{ steps.pkg.outputs.version }}
         run: |
-          dest="$HOME/.local/share/typst/packages/preview/todone/$VERSION"
-          mkdir -p "$dest"
-          rsync -a --exclude='.git' --exclude='.github' --exclude='examples/*.pdf' \
-            ./ "$dest/"
+          for ns in local preview; do
+            dest="$HOME/.local/share/typst/packages/$ns/todone/$VERSION"
+            mkdir -p "$dest"
+            rsync -a --exclude='.git' --exclude='.github' --exclude='examples/*.pdf' \
+              ./ "$dest/"
+          done
 
       - name: Compile examples
         run: |
           typst compile examples/basic.typ
           typst compile examples/advanced.typ
+          typst compile examples/margin.typ
 
       - name: Run tytanic
         run: tt run --no-fail-fast

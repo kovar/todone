@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rewrite every @preview/todone:X.Y.Z reference in user-facing files to
+# Rewrite every @local/todone:X.Y.Z reference in user-facing files to
 # match the version in typst.toml. Run after bumping the version.
 set -euo pipefail
 
@@ -11,11 +11,11 @@ if [ -z "$version" ]; then
   exit 1
 fi
 
-files=(README.md examples/basic.typ examples/advanced.typ)
+files=(README.md examples/basic.typ examples/advanced.typ examples/margin.typ)
 for f in "${files[@]}"; do
   [ -f "$f" ] || continue
   # Portable in-place sed for both BSD and GNU.
-  sed -i.bak -E "s|@preview/todone:[0-9]+\.[0-9]+\.[0-9]+|@preview/todone:$version|g" "$f"
+  sed -i.bak -E "s|@local/todone:[0-9]+\.[0-9]+\.[0-9]+|@local/todone:$version|g" "$f"
   rm -f "$f.bak"
 done
 

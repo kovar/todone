@@ -1,4 +1,4 @@
-#import "@preview/todone:0.1.0": *
+#import "@local/todone:0.2.0": *
 
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {
@@ -76,6 +76,6 @@ By assignee:
 
 #todo-list(group-by: "assignee")
 
-Open items only:
+= Open items only
 
-#todo-list(title: [Open], filter: e => not e.done)
+#todo-list(filter: e => not e.done)
