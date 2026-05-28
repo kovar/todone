@@ -135,18 +135,23 @@
     let dy = placed-y - pos.y
     descent.update(p => calc.max(pos.y, p + gap) + m.height)
 
+    // Anchor in a zero-size box so the note is an inline element in
+    // the surrounding paragraph — without it, `place` is block content
+    // and a `#todo[...]` mid-paragraph would split the paragraph in
+    // two. The box becomes the parent of `place`, so dx is computed
+    // from the cursor position (pos.x) rather than the column edges.
     let dx = if side == left {
-      page-padding - m-left
+      page-padding - pos.x
     } else {
-      m-right - page-padding
+      pw - page-padding - pos.x
     }
 
-    place(
+    box(place(
       side,
       dx: dx,
       dy: dy,
       float: false,
       placed,
-    )
+    ))
   }
 }
