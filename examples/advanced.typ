@@ -1,4 +1,4 @@
-#import "@local/todone:0.2.0": *
+#import "@local/todone:0.2.1": *
 
 // A small custom format that draws TODOs as soft callout boxes.
 #let callout-format(entry) = {

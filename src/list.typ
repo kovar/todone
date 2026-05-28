@@ -1,14 +1,8 @@
 #import "state.typ": config-state, items-state
 
 #let _render-entry(entry, cfg) = {
-  let swatch = box(
-    width: 0.7em,
-    height: 0.7em,
-    fill: entry.color,
-    radius: 1.5pt,
-    baseline: 0.1em,
-  )
-  let body-cell = link(entry.location)[#swatch #h(4pt) #entry.body]
+  let marker = text(weight: "bold", fill: entry.color, entry.prefix)
+  let body-cell = link(entry.location)[#marker #h(4pt) #entry.body]
   let page-num = entry.location.page()
   let row = box(width: 100%)[
     #body-cell

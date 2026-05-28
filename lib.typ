@@ -123,10 +123,11 @@
     render-margin(entry, cfg, position: effective-position)
   }
 
-  // Margin TODOs are placed absolutely and take no flow space, so they
-  // don't need a block wrapper. Inline and custom formats do — without
-  // it, a short TODO can flow onto the same visual line as surrounding
-  // prose and visually hide.
+  // Margin TODOs are placed absolutely and take zero flow space (see
+  // render-margin, which wraps `place` in a `box` so the anchor is
+  // inline and does not split the surrounding paragraph). Inline and
+  // custom formats do need a block — without one, a short TODO can flow
+  // onto the same visual line as surrounding prose and visually hide.
   if margin-fits and not inline and cfg.format == none {
     rendered
   } else {
