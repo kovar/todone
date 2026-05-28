@@ -24,14 +24,33 @@ jobs:
       - name: Install typst-package-check
         run: cargo install --git https://github.com/typst/package-check typst-package-check
 
+      - name: Read package version
+        id: pkg
+        run: |
+          version=$(awk -F'"' '/^version *=/ {print $2; exit}' typst.toml)
+          if [ -z "$version" ]; then
+            echo "could not extract version from typst.toml" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "todone version: $version"
+
+      - name: Verify version references are in sync
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
+        run: ./scripts/check-version-refs.sh "$VERSION"
+
       - name: typstyle --check
         run: typstyle --check lib.typ src/*.typ examples/*.typ
 
       - name: Stage package into Typst data dir
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
         run: |
-          mkdir -p "$HOME/.local/share/typst/packages/preview/todone/0.1.0"
+          dest="$HOME/.local/share/typst/packages/preview/todone/$VERSION"
+          mkdir -p "$dest"
           rsync -a --exclude='.git' --exclude='.github' --exclude='examples/*.pdf' \
-            ./ "$HOME/.local/share/typst/packages/preview/todone/0.1.0/"
+            ./ "$dest/"
 
       - name: Compile examples
         run: |
@@ -42,12 +61,17 @@ jobs:
         run: tt run --no-fail-fast
 
       - name: Stage package into package-check layout
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
         run: |
-          mkdir -p packages-check/packages/preview/todone/0.1.0
+          dest="packages-check/packages/preview/todone/$VERSION"
+          mkdir -p "$dest"
           rsync -a --exclude='.git' --exclude='.github' --exclude='packages-check' \
             --exclude='examples/*.pdf' \
-            ./ packages-check/packages/preview/todone/0.1.0/
+            ./ "$dest/"
 
       - name: Package check
         working-directory: packages-check/packages
-        run: typst-package-check check preview/todone/0.1.0
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
+        run: typst-package-check check "preview/todone/$VERSION"
