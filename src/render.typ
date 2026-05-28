@@ -32,8 +32,7 @@
     fill: entry.color.transparentize(80%),
     stroke: 0.5pt + entry.color,
   )[#label #h(3pt) #inner#extra-line]
-  let struck = if entry.done { strike(content) } else { content }
-  block(above: 0.4em, below: 0.4em, struck)
+  if entry.done { strike(content) } else { content }
 }
 
 #let _descent(page-num, side-name) = state(
@@ -120,8 +119,7 @@
       stroke: stroke-side,
     )[
       #set align(left)
-      #label \
-      #text(size: 0.8em, body-rendered)
+      #label #h(4pt) #text(size: 0.8em, body-rendered)
       #if assignees-line != none [
         \
         #assignees-line
