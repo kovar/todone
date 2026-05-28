@@ -15,24 +15,21 @@ jobs:
         with:
           typst-version: "0.13.0"
 
-      - name: Cache cargo-installed binaries
-        id: cache-bins
+      - name: Install typstyle and tytanic (prebuilt)
+        uses: taiki-e/install-action@v2
+        with:
+          tool: typstyle@0.14.4,tytanic@0.3.3
+
+      - name: Cache typst-package-check
+        id: cache-pcheck
         uses: actions/cache@v4
         with:
-          path: ~/.cargo/bin
-          # Bump the trailing version when the pinned tool versions change.
-          key: cargo-bins-${{ runner.os }}-typstyle0.14.4-tytanic0.3.3-pcheck0.4.6-v1
-
-      - name: Install typstyle
-        if: steps.cache-bins.outputs.cache-hit != 'true'
-        run: cargo install typstyle --locked --version 0.14.4
-
-      - name: Install tytanic
-        if: steps.cache-bins.outputs.cache-hit != 'true'
-        run: cargo install tytanic --locked --version 0.3.3
+          path: ~/.cargo/bin/typst-package-check
+          # Bump the suffix or pin a different --rev to force a rebuild.
+          key: typst-package-check-${{ runner.os }}-69272e4
 
       - name: Install typst-package-check
-        if: steps.cache-bins.outputs.cache-hit != 'true'
+        if: steps.cache-pcheck.outputs.cache-hit != 'true'
         run: cargo install --git https://github.com/typst/package-check --rev 69272e4 typst-package-check
 
       - name: Read package version
