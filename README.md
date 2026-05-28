@@ -73,15 +73,15 @@ Colors stay consistent across the document: every occurrence of `@alice` is the 
 
 ## Types
 
-Three built-in types, each with its own color and label:
+Three built-in types, each with its own color and symbol:
 
-| Function | Label | Color | When to use |
+| Function | Symbol | Color | When to use |
 | --- | --- | --- | --- |
-| `#todo[...]` | TODO | blue | generic task |
-| `#fixme[...]` | FIX | red | known broken thing |
-| `#ask[...]` | ? | purple | open question awaiting an answer |
+| `#todo[...]` | `•` | blue | generic task |
+| `#fixme[...]` | `!` | red | known broken thing |
+| `#ask[...]` | `?` | purple | open question awaiting an answer |
 
-The type owns the box color; `@mentions` inside the body keep their own per-assignee colors. So `#fixme[Broken @alice]` renders as a red FIX box with `@alice` highlighted in alice's color.
+The type owns the box color; `@mentions` inside the body keep their own per-assignee colors. So `#fixme[Broken @alice]` renders as a red `!` box with `@alice` highlighted in alice's color.
 
 ## Configuration recipes
 
@@ -163,7 +163,7 @@ The callback receives a single `entry` dict with these fields:
 - `assignees` — array of handle strings
 - `color` — the resolved color for this annotation (kind color by default)
 - `kind` — `"todo"`, `"fixme"`, or `"ask"`
-- `prefix` — the label content (`[TODO]`, `[FIX]`, `[?]`)
+- `prefix` — the label content (`[•]`, `[!]`, `[?]`)
 - `done` — `true` if marked completed
 - `location` — the source location, useful for cross-references
 - `id` — a unique integer id assigned in document order

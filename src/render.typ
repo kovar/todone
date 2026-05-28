@@ -32,11 +32,8 @@
     fill: entry.color.transparentize(80%),
     stroke: 0.5pt + entry.color,
   )[#label #h(3pt) #inner#extra-line]
-  if entry.done {
-    strike(content)
-  } else {
-    content
-  }
+  let struck = if entry.done { strike(content) } else { content }
+  block(above: 0.4em, below: 0.4em, struck)
 }
 
 #let _descent(page-num, side-name) = state(
