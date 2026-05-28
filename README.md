@@ -17,7 +17,7 @@ Ergonomic TODO annotations for Typst, with auto-colored assignees and inline @me
 
 `todone` lives in your local Typst package directory. Drop the package into
 
-```
+```text
 ~/.local/share/typst/packages/local/todone/<version>/        # Linux
 ~/Library/Application Support/typst/packages/local/todone/<version>/   # macOS
 %APPDATA%\typst\packages\local\todone\<version>\             # Windows
