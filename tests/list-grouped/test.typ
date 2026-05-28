@@ -1,7 +1,7 @@
 #import "/lib.typ": *
 
 #set page(width: 12cm, height: auto, margin: 1cm)
-#show: config
+#show: todone
 
 #todo(inline: true)[Fix A @alice]
 #todo(inline: true)[Fix B @bob]

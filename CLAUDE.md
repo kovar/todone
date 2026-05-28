@@ -4,7 +4,7 @@ Guidance for Claude when working in this repo.
 
 ## What this is
 
-`todone` is a Typst package for inline and margin TODO annotations with auto-colored `@mention` assignees. Entry point is `lib.typ`; modules live under `src/`. Public API: `config` (optional show-rule entry for overrides), `todo`, `fixme`, `ask`, `todo-done`, `todo-list`, `default-palette`. Distributed only via the `@local` namespace — not submitted to Universe.
+`todone` is a Typst package for inline and margin TODO annotations with auto-colored `@mention` assignees. Entry point is `lib.typ`; modules live under `src/`. Public API: `todone` (optional show-rule entry for overrides), `todo`, `fixme`, `ask`, `todo-done`, `todo-list`, `default-palette`. Distributed only via the `@local` namespace — not submitted to Universe.
 
 ## Commands
 
@@ -47,7 +47,7 @@ typst compile examples/advanced.typ
 
 - **`layout did not converge within 5 attempts`** is usually benign. Standard side effect of `state` + `measure` + `place(float: false)` for margin notes. The descent state in `render-margin` uses the closure form (`state.update(p => …)`) so the stacking chain propagates within a single pass — without that, the last TODO in a tightly-packed margin column overlaps the one above. If you see the warning AND visible overlap, suspect the closure form regressed.
 
-- **Default `min-margin` is `2.5cm`** so plain Typst A4 (margins ≈ 2.5cm) triggers margin mode out of the box. The threshold is exposed via `config(min-margin: ...)`. Don't raise the default — that breaks the "defaults must work" invariant.
+- **Default `min-margin` is `2.5cm`** so plain Typst A4 (margins ≈ 2.5cm) triggers margin mode out of the box. The threshold is exposed via `todone(min-margin: ...)`. Don't raise the default — that breaks the "defaults must work" invariant.
 - **Tytanic tests must be created persistent.** `tt new --persistent <name>` first, *then* overwrite `tests/<name>/test.typ`. Empty `ref/` directories register as compile-only and silently skip snapshot comparison.
 - **CI stages the working tree** into `~/.local/share/typst/packages/local/todone/<version>/` (and also `.../preview/todone/<version>/` for the universe-style package-check) so `examples/*.typ` (which import `@local/todone:<version>`) resolve.
 - **Refs inside TODO bodies** (`#todo[See @sec-a]`) would otherwise explode with "Label `<sec-a>` does not exist". `lib.typ` neutralizes them with `show ref: it => "@" + str(it.target)`. Opt in to real refs with `passthrough-refs: true`.

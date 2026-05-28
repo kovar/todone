@@ -85,10 +85,10 @@ The type owns the box color; `@mentions` inside the body keep their own per-assi
 
 ## Configuration recipes
 
-Configuration is optional. When you want to override a default, apply the `config` show rule once at the top of the document:
+Configuration is optional. When you want to override a default, apply the `todone` show rule once at the top of the document:
 
 ```typst
-#show: config.with(palette: default-palette + (purple, teal))
+#show: todone.with(palette: default-palette + (purple, teal))
 ```
 
 ### Margin TODOs vs inline TODOs
@@ -102,7 +102,7 @@ Configuration is optional. When you want to override a default, apply the `confi
 To require wider margins before margin mode kicks in (or to allow it on tighter ones), override `min-margin`:
 
 ```typst
-#show: config.with(min-margin: 4cm)   // require ≥ 4 cm
+#show: todone.with(min-margin: 4cm)   // require ≥ 4 cm
 ```
 
 Force a particular mode per call with `inline: true` (always inline) or a `format:` callback (always custom).
@@ -114,7 +114,7 @@ Force a particular mode per call with `inline: true` (always inline) or a `forma
 Enable `passthrough-refs` to opt in to real refs inside TODOs:
 
 ```typst
-#show: config.with(passthrough-refs: true)
+#show: todone.with(passthrough-refs: true)
 
 = Section A <sec-a>
 
@@ -126,7 +126,7 @@ With this flag, `@foo` is resolved as a normal Typst ref when `<foo>` exists in 
 ### Hide all TODOs for final print
 
 ```typst
-#show: config.with(hidden: true)
+#show: todone.with(hidden: true)
 ```
 
 All `#todo[...]` calls become invisible; the document layout is otherwise unchanged. `#todo-list()` is also suppressed.
@@ -134,7 +134,7 @@ All `#todo[...]` calls become invisible; the document layout is otherwise unchan
 ### Override colors for specific people
 
 ```typst
-#show: config.with(assignees: (
+#show: todone.with(assignees: (
   "alice": red,
   "bob": blue,
 ))
@@ -145,7 +145,7 @@ Handles not listed in the dictionary still receive their hashed color from the p
 ### Custom format
 
 ```typst
-#show: config.with(format: entry => {
+#show: todone.with(format: entry => {
   box(
     fill: entry.color.lighten(80%),
     stroke: entry.color + 0.5pt,
@@ -213,7 +213,7 @@ Render a single annotation. `#fixme` and `#ask` are shorthand for `todo.with(kin
 | `assignee` | `auto`, `str`, or `array` | `auto` | When `auto`, assignees are read from `@mentions` in the body. Pass a string or array to override. |
 | `color` | `auto` or `color` | `auto` | When `auto`, the box color comes from the kind. Pass a color to override. |
 | `position` | `auto`, `left`, or `right` | `auto` | Which margin side to render on. `auto` prefers the wider margin. Ignored when `inline` is `true`. |
-| `inline` | `bool` | `false` | Force inline rendering even when margins are wide. Inline is also the automatic fallback when no margin reaches the `min-margin` threshold (see `config`). |
+| `inline` | `bool` | `false` | Force inline rendering even when margins are wide. Inline is also the automatic fallback when no margin reaches the `min-margin` threshold (see `todone`). |
 | `done` | `bool` | `false` | Mark this annotation as completed. Renders with a strikethrough. |
 
 ### `todo-list(filter: none, group-by: none)`
@@ -225,9 +225,9 @@ Render a collected list of every TODO in the document. No heading is emitted —
 | `filter` | `none` or function | `none` | Predicate `entry => bool`. Each entry exposes `body`, `assignees`, `color`, `kind`, `done`. |
 | `group-by` | `none` or `"assignee"` | `none` | When set, groups entries under sub-headings (one level-2 heading per assignee). |
 
-### `config(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true, passthrough-refs: false, min-margin: 2.5cm)`
+### `todone(body, hidden: false, position: auto, palette: default-palette, assignees: (:), format: none, show-mentions: true, passthrough-refs: false, min-margin: 2.5cm)`
 
-The show-rule entry point. Apply with `#show: config.with(...)` only when you need to override defaults.
+The show-rule entry point. Apply with `#show: todone.with(...)` only when you need to override defaults.
 
 | Argument | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -245,7 +245,7 @@ The show-rule entry point. Apply with `#show: config.with(...)` only when you ne
 The built-in palette used for auto-coloring. Exported so you can extend or reorder it:
 
 ```typst
-#show: config.with(palette: default-palette + (purple, teal))
+#show: todone.with(palette: default-palette + (purple, teal))
 ```
 
 ## License

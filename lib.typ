@@ -5,7 +5,7 @@
 #import "src/list.typ": todo-list
 #import "src/kinds.typ": kinds
 
-#let config(
+#let todone(
   body,
   hidden: false,
   position: auto,

@@ -14,7 +14,7 @@
   ]
 }
 
-#show: config.with(
+#show: todone.with(
   format: callout-format,
   assignees: (
     "alice": red,
