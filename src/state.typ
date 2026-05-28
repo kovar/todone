@@ -8,6 +8,7 @@
   format: none,
   show-mentions: true,
   passthrough-refs: false,
+  min-margin: 2.5cm,
 ))
 
 #let items-state = state("todone:items", ())

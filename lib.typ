@@ -5,7 +5,7 @@
 #import "src/list.typ": todo-list
 #import "src/kinds.typ": kinds
 
-#let todone(
+#let config(
   body,
   hidden: false,
   position: auto,
@@ -14,6 +14,7 @@
   format: none,
   show-mentions: true,
   passthrough-refs: false,
+  min-margin: 2.5cm,
 ) = {
   config-state.update(_ => (
     hidden: hidden,
@@ -23,6 +24,7 @@
     format: format,
     show-mentions: show-mentions,
     passthrough-refs: passthrough-refs,
+    min-margin: min-margin,
   ))
   body
 }
@@ -95,8 +97,6 @@
 
   register(entry)
 
-  figure(kind: "todo", supplement: [TODO], outlined: false, numbering: none, [])
-
   let effective-position = if position != auto { position } else {
     cfg.position
   }
@@ -112,7 +112,7 @@
         calc.min(page.width * 2.5 / 21, 3cm)
       }
     }
-    calc.max(resolve("left"), resolve("right")) >= 3cm
+    calc.max(resolve("left"), resolve("right")) >= cfg.min-margin
   }
 
   if cfg.format != none {

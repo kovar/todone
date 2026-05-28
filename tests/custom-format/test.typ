@@ -1,7 +1,7 @@
 #import "/lib.typ": *
 
 #set page(width: 12cm, height: auto, margin: 1cm)
-#show: todone.with(
+#show: config.with(
   assignees: ("alice": red, "bob": blue),
   format: entry => box(
     fill: entry.color.lighten(80%),

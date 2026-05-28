@@ -1,7 +1,7 @@
 #import "/lib.typ": *
 
 #set page(width: 12cm, height: auto, margin: 1cm)
-#show: todone
+#show: config
 
 #todo(inline: true)[Fix A @alice]
 #todo(inline: true)[Fix B @bob]
@@ -12,4 +12,5 @@
 
 #todo-list(group-by: "assignee")
 
-#todo-list(title: [Open], filter: e => not e.done)
+= Open
+#todo-list(filter: e => not e.done)
