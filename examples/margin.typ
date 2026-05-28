@@ -1,4 +1,4 @@
-#import "@local/todone:0.2.0": *
+#import "@local/todone:0.2.1": *
 
 #set page(paper: "a4", margin: (left: 2cm, right: 5cm, y: 2.5cm))
 #set par(justify: true)

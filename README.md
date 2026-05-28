@@ -26,13 +26,13 @@ Ergonomic TODO annotations for Typst, with auto-colored assignees and inline @me
 then import it with the `@local` namespace:
 
 ```typst
-#import "@local/todone:0.2.0": *
+#import "@local/todone:0.2.1": *
 ```
 
 ## Quick start
 
 ```typst
-#import "@local/todone:0.2.0": *
+#import "@local/todone:0.2.1": *
 
 = My document
 
